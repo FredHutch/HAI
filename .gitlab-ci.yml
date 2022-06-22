@@ -14,7 +14,7 @@ build_test:
         docker stop hai && docker rm --force hai
         fi
     - docker run -d --name hai -p 3838:3838 dockerimages.fhcrc.org/hai:latest
-    - sleep 180 && curl -sI  http://localhost:3838  |head -1|grep -q "200 OK"
+    - sleep 300 && curl -sI  http://localhost:3838  |head -1|grep -q "200 OK"
     - docker stop hai && docker rm --force hai
   
   
