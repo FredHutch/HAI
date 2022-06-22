@@ -5,6 +5,7 @@
 #                    June 15, 2022                 #
 ####################################################
 source("hai.R")
+m_parameters=c(prob_threshold=0.99, min_prob=0.1, min_AA=2)
 #results=HAI(preddata, variant_prop, variant_corehap)
 
 ####################################
@@ -20,8 +21,10 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 								
 								# Input values
 								sidebarPanel(
-									HTML("<h3>Input Data</h3>"),
-									
+									div(style="display: flex; align-items: center;",
+										HTML("<h3>Input Data</h3>"),
+										actionButton("info1", "", style="border-radius: 50%; margin-left: 10px; height:30px; width: 30px;display:flex;", icon = icon("info", lib='font-awesome')),
+									),
 									wellPanel(
 										tags$label("Step 1 - Enter your data",style="float: none; width: 100%;"),
 										actionLink("addlink", "Insert example data"),
@@ -78,6 +81,10 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 														 				 )
 														 ),
 									)	
+								),
+								div(
+									actionLink("contactLink", "Contact Us"),
+									p("© Fred Hutchinson Cancer Research Center 2022")
 								)
 )
 
@@ -148,6 +155,33 @@ server <- function(input, output, session) {
 	
 	observeEvent(input$clear, {
 		updateTextInput(session, inputId='predata', value = "")
+	})
+	
+	observeEvent(input$info1, {
+		showModal(modalDialog(
+			title = "INPUT DATA",
+			"For GISAID viruses (www.gisaid.org), use a string of virus ID, separated by comma.  
+			You can directly input several virus ID in the text box, or can place them in a ASCII file.
+			
+			For your own viral data, it is best to submit your data to GISAID, and download metadata for uploading.
+			If you want to prepare your data file with rows of viruses and columns of variables.
+			The critical column is AA.substitutions as specified in GISAID",
+			easyClose = TRUE,
+			footer = NULL
+		))
+	})
+	
+	observeEvent(input$contactLink, {
+		showModal(modalDialog(
+			title = "CONTACT",
+			"The HAI provides Haplotype-Based Artificial Intellgence for SARS-COV-2 variant protection.  
+			This tool is freely provided for non-profit research (sample size limit at 10,000).  
+			
+			For any non-profit investigation with much large number of viruses, please contact Lue Ping Zhao ,<lzhao@fredhutch.org> 
+			to explore collaborative research.  For any for-profit research, please contact Mr. Shelby, Patrick <jpshelby@fredhutch.org>.",
+			easyClose = TRUE,
+			footer = NULL
+		))
 	})
 	
 	output$file1_ui <- renderUI({
