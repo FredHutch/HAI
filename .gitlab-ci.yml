@@ -7,7 +7,7 @@ build_test:
   script:
     - aws s3 cp s3://fh-shiny-app-support/lzhao/hai/preddata_2022_05_18_full.Rdata ./data/
     - docker build -t dockerimages.fhcrc.org/hai:latest .
-    - git checkout -- data/preddata_2022_05_18_full.Rdata
+    - rm data/preddata_2022_05_18_full.Rdata
     - |
         if docker ps -a|tr -s ' '|rev|cut -d ' ' -f 1|rev|grep -q hai
         then
