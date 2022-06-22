@@ -1,0 +1,9 @@
+version: '2'
+services:
+  hai:
+    image: dockerimages.fhcrc.org/hai:latest
+
+    labels:
+      io.rancher.container.pull_image: always
+
+    restart: always

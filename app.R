@@ -245,4 +245,7 @@ server <- function(input, output, session) {
 ####################################
 # Create the shiny app             #
 ####################################
+if (!interactive()) {
+	options(shiny.port=3838L, shiny.host="0.0.0.0", launch.browser=FALSE)
+}
 shinyApp(ui = ui, server = server)
