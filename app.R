@@ -17,7 +17,9 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 									type = 'text/css',
 									'table.dataTable td {white-space: nowrap;}'
 								),
+								a("Term of Use",target="_blank",href="data/HAI TOU.pdf"),
 								headerPanel('AI for SARS-COV-2 Variant Predictions'),
+								
 								
 								# Input values
 								sidebarPanel(
@@ -83,8 +85,9 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 									)	
 								),
 								div(
-									actionLink("contactLink", "Contact Us"),
-									p("© Fred Hutchinson Cancer Research Center 2022")
+									actionLink("contactLink1", "For Academic Users, contact"), br(),
+									actionLink("contactLink2", "For non-Academic Users, contact"),
+									p("Copyright © 2022 Fred Hutchinson Cancer Research Center.  All rights reserved.")
 								)
 )
 
@@ -170,14 +173,20 @@ server <- function(input, output, session) {
 		))
 	})
 	
-	observeEvent(input$contactLink, {
+	observeEvent(input$contactLink1, {
 		showModal(modalDialog(
-			title = "CONTACT",
-			"The HAI provides Haplotype-Based Artificial Intellgence for SARS-COV-2 variant protection.  
-			This tool is freely available for all non-profit research activities (sample size limit at 10,000). 
-			For non-profit investigations dealing with larger sample sizes, please contact Lue Ping Zhao <lzhao@fredhutch.org> 
-			to explore collaborative research.", br(),br(),
-			"For any for-profit collaborative research, please contact Mr. Patrick Shelby <jpshelby@fredhutch.org>.",
+			title = "Academic Contact",
+			"Contact Lue Ping Zhao <lzhao@fredhutch.org> for academic collaborations",
+			easyClose = TRUE,
+			footer = NULL
+		)
+		)
+	})
+	
+	observeEvent(input$contactLink2, {
+		showModal(modalDialog(
+			title = "For for-profit uses, Contact",
+			"Contact Mr. Patrick Shelby <jpshelby@fredhutch.org> for collaborations",
 			easyClose = TRUE,
 			footer = NULL
 		)
@@ -278,12 +287,4 @@ server <- function(input, output, session) {
 ####################################
 # Create the shiny app             #
 ####################################
-
-# Do not remove - this is needed for deployment:
-if (!interactive()) {
-	options(shiny.port=3838L, shiny.host="0.0.0.0", launch.browser=FALSE)
-}
-
-
-
 shinyApp(ui = ui, server = server)
