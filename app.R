@@ -161,9 +161,8 @@ server <- function(input, output, session) {
 		showModal(modalDialog(
 			title = "INPUT DATA",
 			"For GISAID viruses (www.gisaid.org), use a string of virus ID, separated by comma.  
-			You can directly input several virus ID in the text box, or can place them in a ASCII file.
-			
-			For your own viral data, it is best to submit your data to GISAID, and download metadata for uploading.
+			You can directly input several virus ID in the text box, or can place them in a ASCII file.", br(),br(),
+			"For your own viral data, it is best to submit your data to GISAID, and download metadata for uploading.
 			If you want to prepare your data file with rows of viruses and columns of variables.
 			The critical column is AA.substitutions as specified in GISAID",
 			easyClose = TRUE,
@@ -175,13 +174,14 @@ server <- function(input, output, session) {
 		showModal(modalDialog(
 			title = "CONTACT",
 			"The HAI provides Haplotype-Based Artificial Intellgence for SARS-COV-2 variant protection.  
-			This tool is freely provided for non-profit research (sample size limit at 10,000).  
-			
-			For any non-profit investigation with much large number of viruses, please contact Lue Ping Zhao ,<lzhao@fredhutch.org> 
-			to explore collaborative research.  For any for-profit research, please contact Mr. Shelby, Patrick <jpshelby@fredhutch.org>.",
+			This tool is freely available for all non-profit research activities (sample size limit at 10,000). 
+			For non-profit investigations dealing with larger sample sizes, please contact Lue Ping Zhao <lzhao@fredhutch.org> 
+			to explore collaborative research.", br(),br(),
+			"For any for-profit collaborative research, please contact Mr. Patrick Shelby <jpshelby@fredhutch.org>.",
 			easyClose = TRUE,
 			footer = NULL
-		))
+		)
+		)
 	})
 	
 	output$file1_ui <- renderUI({
@@ -272,13 +272,10 @@ server <- function(input, output, session) {
 			write.csv(datasetInput()[["inputdata"]], file, row.names = T)
 		}
 	)
-	
+
 }
 
 ####################################
 # Create the shiny app             #
 ####################################
-if (!interactive()) {
-	options(shiny.port=3838L, shiny.host="0.0.0.0", launch.browser=FALSE)
-}
 shinyApp(ui = ui, server = server)
