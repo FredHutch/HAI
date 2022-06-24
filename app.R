@@ -4,7 +4,7 @@
 #             Lue Ping Zhao & Michael Zhao         #
 #                    June 15, 2022                 #
 ####################################################
-source("hai.R")
+#source("hai.R")
 m_parameters=c(prob_threshold=0.99, min_prob=0.1, min_AA=2)
 #results=HAI(preddata, variant_prop, variant_corehap)
 
@@ -20,6 +20,7 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 								
 								headerPanel('AI for SARS-COV-2 Variant Predictions'),
 								a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
+								
 								
 								# Input values
 								sidebarPanel(
@@ -85,8 +86,8 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 									)	
 								),
 								div(
-									actionLink("contactLink1", "For Academic Users, contact"), br(),
-									actionLink("contactLink2", "For non-Academic Users, contact"),
+									actionLink("contactLink1", "Academic user contact"), br(),
+									actionLink("contactLink2", "Non-Academic user contact"),
 									p("Copyright © 2022 Fred Hutchinson Cancer Research Center.  All rights reserved.")
 								)
 )
@@ -287,11 +288,9 @@ server <- function(input, output, session) {
 ####################################
 # Create the shiny app             #
 ####################################
-
 # Do not remove - this is needed for deployment:
 if (!interactive()) {
 	options(shiny.port=3838L, shiny.host="0.0.0.0", launch.browser=FALSE)
 }
-
 
 shinyApp(ui = ui, server = server)
