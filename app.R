@@ -4,7 +4,7 @@
 #             Lue Ping Zhao & Michael Zhao         #
 #                    June 15, 2022                 #
 ####################################################
-#source("hai.R")
+source("hai.R")
 m_parameters=c(prob_threshold=0.99, min_prob=0.1, min_AA=2)
 #results=HAI(preddata, variant_prop, variant_corehap)
 
