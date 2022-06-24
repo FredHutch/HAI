@@ -19,7 +19,7 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 								),
 								
 								headerPanel('AI for SARS-COV-2 Variant Predictions'),
-								tags$a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
+								a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
 								
 								# Input values
 								sidebarPanel(
