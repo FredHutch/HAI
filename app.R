@@ -17,9 +17,9 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 									type = 'text/css',
 									'table.dataTable td {white-space: nowrap;}'
 								),
-								tags$a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
-								headerPanel('AI for SARS-COV-2 Variant Predictions'),
 								
+								headerPanel('AI for SARS-COV-2 Variant Predictions'),
+								tags$a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
 								
 								# Input values
 								sidebarPanel(
