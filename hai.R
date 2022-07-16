@@ -2,6 +2,7 @@
 # Import libraries
 library(shiny); library(shinythemes); library(data.table); library(RCurl);library(DT);library(shinyjs)
 require(stringdist); require(irr); require(xlsx);require(limma);require(pbapply); require(parallelDist); library(mgcv); require(psych); require(RColorBrewer);library(dplyr)
+library("ips")
 #source("../local_functions.R")
 #library("devtools"); reload(pkg = "D:/AAAA/Projects/ROR", quiet = FALSE); library("ROR");
 
@@ -18,12 +19,24 @@ require(stringdist); require(irr); require(xlsx);require(limma);require(pbapply)
 load(file="data/preddata_2022_05_18_full.Rdata")
 load(file="data/ref seq.Rdata"); rownames(ref_AA)=sub("-","_", rownames(ref_AA))
 load(file="data/hap cores.Rdata")
-
+load(file="data/full training variant prop.Rdata")
 #metadata=metadata[sample(1:10307470, size=200000),]
 #save(metadata, file="data/preddata_2022_05_18_part.Rdata")
 #save(ex_data, file="data/exampledata.Rdata")
 #load(file="data/exampledata.Rdata"); pred_data=ex_data
 #write.csv(pred_data, file="data/example.csv")
+
+# process sequence data
+#ref_seq<-read.fas("data/Covid-ref-NC_045512.fasta")
+#seq <- read.fas("data/gisaid_hcov-19_2021_12_01_00.fasta")
+#aligned_seq=mafft(seq, ref_seq, method = "auto", maxiterate = 0, op = 1.53, ep = 0,  thread = -1,exec=,  quiet=T, file="result/aa.fasta")
+# param="--6merpair --keeplength --addfragments"    
+# infile="data/gisaid_hcov-19_2021_12_01_00.fasta"
+# outfile=paste0("workingfiles/", "aligned_",strsplit(infile,"\\/")[[1]][2])
+# #system(paste(.findExecutable("mafft"), param, infile, ">", outfile))
+# system(paste("mafft", param, infile, ">", outfile))
+# mafft --6merpair --keeplength --addfragments gisaid_hcov-19_2021_12_02_23.fasta Covid-ref-NC_045512.fasta > aligned_sequence_12_02_2021.fasta
+
 # HAI model
 xN_limit=10000
 # variant_prop is modifiable per population
@@ -89,52 +102,56 @@ HAI<-function(pred_data, variant_prop, variant_corehap, m_parameters){
 	rownames(pred_variant)=predID
 	
 	# post-prediction modification
-	tmp_data=data.frame(pred_AA,pred_prob1[,variant_list_s])
-	ppred=apply(tmp_data,1, function(x,y){
-		target_variant=x[-1];
-		target_variant=names(target_variant)[target_variant>=1-prob_threshold]; other_variant=setdiff(variant_list, target_variant)  # assumption
-		if (length(target_variant)==0) ppred_variant="Zother" else
-			if (length(target_variant)==1) ppred_variant=target_variant else {
-				if (length(target_variant)==2) {
-					core1=variant_corehap[[target_variant[1]]]$genes; core2=variant_corehap[[target_variant[2]]]$genes
-					tmp=setdiff(core1, core2); core2=setdiff(core2, core1); core1=tmp
-					tmp=strsplit2(x[1],","); tmp=sub("del","d", tmp); tmp=sub("stop","s", tmp)
-					tmp1=nchar(tmp); tmp2=substr(tmp, 1, tmp1-1);
-					tmpMut=substr(tmp, tmp1, tmp1);names(tmpMut)=tmp2
-					tmp_core1=intersect(core1, tmp2);
-					tmpIND1=sum(ref_AA[tmp_core1,"AA"]!=tmpMut[tmp_core1])
-					tmp_core2=intersect(core2, tmp2);
-					tmpIND2=sum(ref_AA[tmp_core2,"AA"]!=tmpMut[tmp_core2])
-					if (tmpIND1==0 & tmpIND2==0) stop("check") else
-						if (tmpIND1>0 & tmpIND2==0) ppred_variant=target_variant[1] else
-							if (tmpIND1==0 & tmpIND2>0) ppred_variant=target_variant[2] else
-								ppred_variant=paste(target_variant,collapse = "-")
-				} else {if (length(target_variant)==3) {
-					core1=variant_corehap[[target_variant[1]]]$genes;
-					core2=variant_corehap[[target_variant[2]]]$genes
-					core3=variant_corehap[[target_variant[3]]]$genes
-					tmp1=setdiff(core1, c(core2,core3)); tmp2=setdiff(core2,c(core1,core3));
-					tmp3=setdiff(core3,c(core1,core2));core1=tmp1;core2=tmp2;core3=tmp3;
-					tmp=strsplit2(x[1],","); tmp=sub("del","d", tmp); tmp=sub("stop","s", tmp)
-					tmp1=nchar(tmp); tmp2=substr(tmp, 1, tmp1-1);
-					tmpMut=substr(tmp, tmp1, tmp1);names(tmpMut)=tmp2
-					tmp=intersect(core1, tmp2);tmpIND1=sum(ref_AA[tmp,"AA"]!=tmpMut[tmp])
-					tmp=intersect(core2, tmp2);tmpIND2=sum(ref_AA[tmp,"AA"]!=tmpMut[tmp])
-					tmp=intersect(core3, tmp2);tmpIND3=sum(ref_AA[tmp,"AA"]!=tmpMut[tmp])
-					tmp=as.numeric(c(tmpIND1, tmpIND2, tmpIND3)>0)
-					if (sum(tmp==c(0,0,0))==3) stop("check") else
-						if (sum(tmp==c(1,0,0))==3) ppred_variant=target_variant[1] else
-							if (sum(tmp==c(0,1,0))==3) ppred_variant=target_variant[2] else
-								if (sum(tmp==c(0,0,1))==3) ppred_variant=target_variant[3] else
-									if (sum(tmp==c(1,1,0))==3) ppred_variant=paste(target_variant[1:2],collapse = "-") else
-										if (sum(tmp==c(1,0,1))==3) ppred_variant=paste(target_variant[c(1,3)],collapse = "-") else
-											if (sum(tmp==c(0,1,1))==3) ppred_variant=paste(target_variant[2:3],collapse = "-") else
-												if (sum(tmp==c(1,1,1))==3) ppred_variant=paste(target_variant,collapse = "-")
-				} else {print((target_variant))
-					stop("Check for possible >four variant mixtures")}
+	tmp_data=data.frame(pred_AA,pred_variant[,1],pred_prob1[,variant_list[-15]])
+	
+	ppred=pbapply(tmp_data,1, function(x,y){
+		if (x[2]!="zMixture") ppred_variant=x[2] else {
+			target_variant=x[-(1:2)]; 
+			target_variant=names(target_variant)[target_variant>=0.01]; other_variant=setdiff(variant_list, target_variant)
+			if (length(target_variant)==0) ppred_variant="Zother" else 
+				if (length(target_variant)==1) ppred_variant=target_variant else {
+					if (length(target_variant)==2) {
+						core1=variant_corehap[[target_variant[1]]]$genes; core2=variant_corehap[[target_variant[2]]]$genes
+						tmp=setdiff(core1, core2); core2=setdiff(core2, core1); core1=tmp
+						tmp=strsplit2(x[1],","); tmp=sub("del","d", tmp); tmp=sub("stop","s", tmp)
+						tmp1=nchar(tmp); tmp2=substr(tmp, 1, tmp1-1);
+						tmpMut=substr(tmp, tmp1, tmp1);names(tmpMut)=tmp2
+						tmp_core1=intersect(core1, tmp2);
+						tmpIND1=sum(ref_AA[tmp_core1,"AA"]!=tmpMut[tmp_core1])
+						tmp_core2=intersect(core2, tmp2); 
+						tmpIND2=sum(ref_AA[tmp_core2,"AA"]!=tmpMut[tmp_core2])
+						if (tmpIND1==0 & tmpIND2==0) stop("check") else 
+							if (tmpIND1>0 & tmpIND2==0) ppred_variant=target_variant[1] else
+								if (tmpIND1==0 & tmpIND2>0) ppred_variant=target_variant[2] else
+									ppred_variant=paste(target_variant,collapse = "-")
+					} else {if (length(target_variant)==3) {
+						core1=variant_corehap[[target_variant[1]]]$genes; 
+						core2=variant_corehap[[target_variant[2]]]$genes
+						core3=variant_corehap[[target_variant[3]]]$genes
+						tmp1=setdiff(core1, c(core2,core3)); tmp2=setdiff(core2,c(core1,core3));
+						tmp3=setdiff(core3,c(core1,core2));core1=tmp1;core2=tmp2;core3=tmp3;
+						tmp=strsplit2(x[1],","); tmp=sub("del","d", tmp); tmp=sub("stop","s", tmp)
+						tmp1=nchar(tmp); tmp2=substr(tmp, 1, tmp1-1);
+						tmpMut=substr(tmp, tmp1, tmp1);names(tmpMut)=tmp2
+						tmp=intersect(core1, tmp2);tmpIND1=sum(ref_AA[tmp,"AA"]!=tmpMut[tmp])
+						tmp=intersect(core2, tmp2);tmpIND2=sum(ref_AA[tmp,"AA"]!=tmpMut[tmp])
+						tmp=intersect(core3, tmp2);tmpIND3=sum(ref_AA[tmp,"AA"]!=tmpMut[tmp])
+						tmp=as.numeric(c(tmpIND1, tmpIND2, tmpIND3)>0)
+						if (sum(tmp==c(0,0,0))==3) stop("check") else 
+							if (sum(tmp==c(1,0,0))==3) ppred_variant=target_variant[1] else
+								if (sum(tmp==c(0,1,0))==3) ppred_variant=target_variant[2] else
+									if (sum(tmp==c(0,0,1))==3) ppred_variant=target_variant[3] else
+										if (sum(tmp==c(1,1,0))==3) ppred_variant=paste(target_variant[1:2],collapse = "-") else
+											if (sum(tmp==c(1,0,1))==3) ppred_variant=paste(target_variant[c(1,3)],collapse = "-") else
+												if (sum(tmp==c(0,1,1))==3) ppred_variant=paste(target_variant[2:3],collapse = "-") else
+													if (sum(tmp==c(1,1,1))==3) ppred_variant=paste(target_variant,collapse = "-")
+					} else {print((target_variant))
+						stop("Check for possible >four variant mixtures")}
+					}
 				}
-			}
-			return(ppred_variant)}, ref_AA)
+		}
+		return(ppred_variant)}, ref_AA)
+	
 	pred_variant[,1]=ifelse(pred_variant[,1]=="Zother","UP", pred_variant[,1])
 	pred_variant[,1]=ifelse(pred_variant[,1]=="Zmixture","MV", pred_variant[,1])
 	ppred=ifelse(ppred=="Zother","UP", ppred)

@@ -4,14 +4,14 @@
 #             Lue Ping Zhao & Michael Zhao         #
 #                    June 15, 2022                 #
 ####################################################
-#source("hai.R")
+source("hai.R")
 m_parameters=c(prob_threshold=0.99, min_prob=0.1, min_AA=2)
 #results=HAI(preddata, variant_prop, variant_corehap)
 
 ####################################
 # User interface                   #
 ####################################
-ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
+ui <- fluidPage(theme = shinytheme("superhero"),shinyjs::useShinyjs(),
 								# Page header
 								tags$style(
 									type = 'text/css',
@@ -88,10 +88,10 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 									)	
 								),
 								div(
-									actionLink("contactLink1", "Academic user contact"), br(),
-									actionLink("contactLink2", "Non-Academic user contact"),
+									actionLink("contactLink1", "Academic contact"), br(),
+									actionLink("contactLink2", "Non-academic contact"),
 									p("Copyright © 2022 Fred Hutchinson Cancer Research Center.  All rights reserved.")
-								)
+								),
 )
 
 ####################################
@@ -184,7 +184,7 @@ server <- function(input, output, session) {
 	observeEvent(input$contactLink1, {
 		showModal(modalDialog(
 			title = h2("Academic Contact"),
-			HTML("Contact Lue Ping Zhao <lzhao@fredhutch.org> for academic collaborations, <br><br><br> 
+			HTML("Contact Lue Ping Zhao <lzhao@fredhutch.org> for academic collaborations. <br><br><br> 
 			We would like to thank the GISAID Initiative and are grateful to all of the data contributors, i.e. the Authors, 
 			the Originating laboratories responsible for obtaining the specimens, and the Submitting laboratories for 
 			generating the genetic sequence and metadata and sharing via the GISAID Initiative, on which this research is based. 
