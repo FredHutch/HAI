@@ -4,7 +4,7 @@
 #             Lue Ping Zhao & Michael Zhao         #
 #                    June 15, 2022                 #
 ####################################################
-source("hai.R")
+#source("hai.R")
 m_parameters=c(prob_threshold=0.99, min_prob=0.1, min_AA=2)
 #results=HAI(preddata, variant_prop, variant_corehap)
 
@@ -17,11 +17,12 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 									type = 'text/css',
 									'table.dataTable td {white-space: nowrap;}'
 								),
-								
-								headerPanel('AI for SARS-COV-2 Variant Predictions'),
+								a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
+								titlePanel(div(h1('AI for SARS-COV-2 Variant Predictions'),div(style="display: flex; align-items: center;",h5("Enabled by data from GISAID"),
+															 tags$a(img(src="GISAID logo.PNG", style="margin-left: 8px;", height="25%", width="25%", align="left"),href="https://gisaid.org")),
+															 )
+													 ),
 								#a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
-								a("Term of Use",target="_blank",href="https://drive.google.com/file/d/1RO966jcWjErVFbWeVgs4aIs16sXCMC9A/view?usp=sharing"),
-								
 								
 								# Input values
 								sidebarPanel(
@@ -32,7 +33,7 @@ ui <- fluidPage(theme = shinytheme("united"),shinyjs::useShinyjs(),
 									wellPanel(
 										tags$label("Step 1 - Enter your data",style="float: none; width: 100%;"),
 										actionLink("addlink", "Insert example data"),
-										tags$textarea(id="predata", rows=10, cols=100, style="float: none; width:100%;", "EPI_ISL_2535080,EPI_ISL_9164243,EPI_ISL_6945682,EPI_ISL_10910169,EPI_ISL_759612,EPI_ISL_12500362,..."),
+										tags$textarea(id="predata", rows=10, cols=100, style="float: none; width:100%;", "EPI_ISL_2535080,EPI_ISL_9164243,EPI_ISL_6945682,EPI_ISL_10910169,EPI_ISL_759612,EPI_ISL_12500362,EPI_ISL_other1, EPI_ISL_other2"),
 										uiOutput('file1_ui'),
 										tags$label("Step 2 - Submit your job",style="float: none; width: 100%;"),
 										actionButton("submitbutton", "Predict", class = "btn btn-primary"),
@@ -127,9 +128,9 @@ server <- function(input, output, session) {
 				xdata <- inTextbox
 				xdata=gsub(" ","", xdata)
 				xdata=strsplit2(xdata,",")
-				xdata=xdata[substr(xdata,1,8)=="EPI_ISL_"]
+				#xdata=xdata[substr(xdata,1,8)=="EPI_ISL_"]
 				xdata=unique(xdata)
-				xdata=intersect(xdata, rownames(metadata))
+				#xdata=intersect(xdata, rownames(metadata))
 				xN=length(xdata)
 				# Status/Output Text Box
 				output$contents <- renderPrint({
@@ -137,8 +138,13 @@ server <- function(input, output, session) {
 				})
 				if (is.null(xdata)) return("invalid GISAID ID or no selected data") else {
 					if (xN<=xN_limit) {
+						others=setdiff(xdata, rownames(metadata))
 						xdata=intersect(xdata, rownames(metadata))
 						results<-HAI(metadata[xdata,], variant_prop, variant_corehap,m_parameters)
+						if (length(others)>0){
+							results$summary<-rbind(results$summary, matrix(NA, length(others), NCOL(results$summary), 
+																														 dimnames = list(others, colnames(results$summary))))							
+						}
 						return(results)						
 					}
 				}
@@ -164,7 +170,7 @@ server <- function(input, output, session) {
 	
 	observeEvent(input$info1, {
 		showModal(modalDialog(
-			title = "INPUT DATA",
+			title = h2("INPUT DATA"),
 			"For GISAID viruses (www.gisaid.org), use a string of virus ID, separated by comma.  
 			You can directly input several virus ID in the text box, or can place them in a ASCII file.", br(),br(),
 			"For your own viral data, it is best to submit your data to GISAID, and download metadata for uploading.
@@ -177,8 +183,13 @@ server <- function(input, output, session) {
 	
 	observeEvent(input$contactLink1, {
 		showModal(modalDialog(
-			title = "Academic Contact",
-			"Contact Lue Ping Zhao <lzhao@fredhutch.org> for academic collaborations",
+			title = h2("Academic Contact"),
+			HTML("Contact Lue Ping Zhao <lzhao@fredhutch.org> for academic collaborations, <br><br><br> 
+			We would like to thank the GISAID Initiative and are grateful to all of the data contributors, i.e. the Authors, 
+			the Originating laboratories responsible for obtaining the specimens, and the Submitting laboratories for 
+			generating the genetic sequence and metadata and sharing via the GISAID Initiative, on which this research is based. 
+			GISAID data provided on this website are subject to GISAID’s Terms and Conditions. <br><br><br>
+			Elbe, S., and Buckland-Merrett, G. (2017) Data, disease and diplomacy: GISAID’s innovative contribution to global health. Global Challenges, 1:33-46. DOI: 10.1002/gch2.1018 PMCID: 31565258."),
 			easyClose = TRUE,
 			footer = NULL
 		)
@@ -187,7 +198,7 @@ server <- function(input, output, session) {
 	
 	observeEvent(input$contactLink2, {
 		showModal(modalDialog(
-			title = "For for-profit uses, Contact",
+			title = h2("For for-profit uses, Contact"),
 			"Contact Mr. Patrick Shelby <jpshelby@fredhutch.org> for collaborations",
 			easyClose = TRUE,
 			footer = NULL
