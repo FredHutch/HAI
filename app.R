@@ -19,7 +19,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),shinyjs::useShinyjs(),
 								),
 								a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
 								titlePanel(div(h1('AI for SARS-COV-2 Variant Predictions'),div(style="display: flex; align-items: center;",h5("Enabled by data from GISAID"),
-															 tags$a(img(src="GISAID logo.PNG", style="margin-left: 8px;", height="25%", width="25%", align="left"),href="https://gisaid.org")),
+															 tags$a(img(src="GISAID logo.PNG", style="margin-left: 8px;", height="25%", width="35%", align="left"),href="https://gisaid.org")),
 															 )
 													 ),
 								#a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
