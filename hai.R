@@ -16,7 +16,7 @@ library("ips")
 # save(metadata, file="data/pred_data_2022_05_18.Rdata")
 
 # Loading data
-#load(file="data/preddata_2022_05_18_full.Rdata")
+load(file="data/preddata_2022_05_18_full.Rdata")
 #load(file="data/preddata_2022_05_18_part.Rdata")
 load(file="data/ref seq.Rdata"); rownames(ref_AA)=sub("-","_", rownames(ref_AA))
 load(file="data/hap cores.Rdata")
