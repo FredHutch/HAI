@@ -11,17 +11,20 @@ m_parameters=c(prob_threshold=0.99, min_prob=0.1, min_AA=2)
 ####################################
 # User interface                   #
 ####################################
+addResourcePath("assets", file.path(getwd(), "www"))
 ui <- fluidPage(theme = shinytheme("superhero"),shinyjs::useShinyjs(),
+tags$head(tags$script(src="assets/js/gisaid/gisaid.js")),
+HTML("Example: <span epi_isl_id='EPI_ISL_430811'>EPI_ISL_430811</span>"),
 								# Page header
 								tags$style(
 									type = 'text/css',
 									'table.dataTable td {white-space: nowrap;}'
 								),
-								titlePanel(div(h1('AI for SARS-COV-2 Variant Predictions'),div(style="display: flex; align-items: center;",h5("Enabled by data from GISAID"),
-															 tags$a(img(src="GISAID logo.PNG", style="margin-left: 8px;", height="25%", width="35%", align="left"),href="https://gisaid.org")),
-															 )
-													 ),
-								#a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
+								titlePanel(div(h1('AI for SARS-COV-2 Variant Predictions'),div(style="display: flex; align-items: center;",h5("Enabled by data from "),
+															 tags$a(target="_blank", img(src="assets/GISAIDlogo.png", style="margin-left: 8px;", height="25%", width="35%", align="left"),href="https://gisaid.org")),
+															 ),
+													 windowTitle='AI for SARS-COV-2 Variant Predictions'),
+								#a("Terms of Use",target="_blank",href="./HAI_TOU.pdf"),
 								
 								# Input values
 								sidebarPanel(
@@ -86,10 +89,17 @@ ui <- fluidPage(theme = shinytheme("superhero"),shinyjs::useShinyjs(),
 														 ),
 									)	
 								),
+		HTML("<script>gisaid.addPopups();</script>"),
+																	HTML("<div>We would like to thank the GISAID Initiative and are grateful to all of the data contributors, i.e. the Authors, 
+			the Originating laboratories responsible for obtaining the specimens, and the Submitting laboratories for 
+			generating the genetic sequence and metadata and sharing via the GISAID Initiative, on which this research is based. 
+			GISAID data provided on this website are subject to GISAID’s <a target='_blank' href='https://www.gisaid.org/registration/terms-of-use/'>Terms and Conditions</a>. <br/>
+			Elbe, S., and Buckland-Merrett, G. (2017) Data, disease and diplomacy: GISAID’s innovative contribution to global health. Global Challenges, 1:33-46. DOI: <a target='blank' href='https://onlinelibrary.wiley.com/doi/10.1002/gch2.1018'>10.1002/gch2.1018</a> PMCID: <a target='_blank' href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6607375/'>31565258</a>.</div><br/>"),
+
 								div(
-									actionLink("contactLink1", "Academic contact"), br(),
+								actionLink("contactLink1", "Academic contact"), br(),
 									actionLink("contactLink2", "Non-academic contact"),
-									div(style='display: flex; justify-content: space-between;', p("Copyright © 2022 Fred Hutchinson Cancer Research Center.  All rights reserved."), a("Term of Use",target="_blank",href="./HAI_TOU.pdf"),
+									div(style='display: flex; justify-content: space-between;', p("Copyright © 2022 Fred Hutchinson Cancer Research Center.  All rights reserved."), a("Terms of Use",target="_blank",href="assets/HAI_TOU.pdf"),
 )
 								),
 )
@@ -184,12 +194,8 @@ server <- function(input, output, session) {
 	observeEvent(input$contactLink1, {
 		showModal(modalDialog(
 			title = h2("Academic Contact"),
-			HTML("Contact Lue Ping Zhao <lzhao@fredhutch.org> for academic collaborations. <br><br><br> 
-			We would like to thank the GISAID Initiative and are grateful to all of the data contributors, i.e. the Authors, 
-			the Originating laboratories responsible for obtaining the specimens, and the Submitting laboratories for 
-			generating the genetic sequence and metadata and sharing via the GISAID Initiative, on which this research is based. 
-			GISAID data provided on this website are subject to GISAID’s Terms and Conditions. <br><br><br>
-			Elbe, S., and Buckland-Merrett, G. (2017) Data, disease and diplomacy: GISAID’s innovative contribution to global health. Global Challenges, 1:33-46. DOI: 10.1002/gch2.1018 PMCID: 31565258."),
+			HTML("Contact Lue Ping Zhao &lt;lzhao@fredhutch.org&gt; for academic collaborations. <br>
+"),
 			easyClose = TRUE,
 			footer = NULL
 		)
