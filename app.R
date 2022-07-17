@@ -14,7 +14,7 @@ m_parameters=c(prob_threshold=0.99, min_prob=0.1, min_AA=2)
 addResourcePath("assets", file.path(getwd(), "www"))
 ui <- fluidPage(theme = shinytheme("superhero"),shinyjs::useShinyjs(),
 tags$head(tags$script(src="assets/js/gisaid/gisaid.js")),
-HTML("Example: <span epi_isl_id='EPI_ISL_430811'>EPI_ISL_430811</span>"),
+# HTML("Example: <span epi_isl_id='EPI_ISL_430811'>EPI_ISL_430811</span>"),
 								# Page header
 								tags$style(
 									type = 'text/css',
