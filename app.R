@@ -14,8 +14,6 @@ m_parameters=c(prob_threshold=0.99, min_prob=0.1, min_AA=2)
 addResourcePath("assets", file.path(getwd(), "www"))
 ui <- fluidPage(theme = shinytheme("superhero"),shinyjs::useShinyjs(),
 tags$head(tags$script(src="assets/js/gisaid/gisaid.js")),
-# tags$head(tags$script(src="assets/js/custom.js")),
-# HTML("Example: <span epi_isl_id='foo'>foo</span>"),
 								# Page header
 								tags$style(
 									type = 'text/css',
@@ -325,7 +323,7 @@ server <- function(input, output, session) {
 ####################################
 # Do not remove - this is needed for deployment:
 if (!interactive()) {
-	options(shiny.port=2828L, shiny.host="0.0.0.0", launch.browser=FALSE)
+	options(shiny.port=3838L, shiny.host="0.0.0.0", launch.browser=FALSE)
 }
 
 shinyApp(ui = ui, server = server)
