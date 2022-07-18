@@ -13,6 +13,7 @@ m_parameters=c(prob_threshold=0.99, min_prob=0.1, min_AA=2)
 ####################################
 addResourcePath("assets", file.path(getwd(), "www"))
 ui <- fluidPage(theme = shinytheme("superhero"),shinyjs::useShinyjs(),
+tags$head(tags$script(src="assets/js/custom.js")),
 tags$head(tags$script(src="assets/js/gisaid/gisaid.js")),
 								# Page header
 								tags$style(
@@ -43,8 +44,9 @@ tags$head(tags$script(src="assets/js/gisaid/gisaid.js")),
 								),
 								# Output panel
 								mainPanel(
+									id="hai-mainpanel",
 									verbatimTextOutput('contents'),
-									navbarPage(title=("RESULTS"),
+									navbarPage(id="hai-navbar", title=("RESULTS"),
 														 tabPanel("Summary",value="",
 														 				 wellPanel(
 														 				 	div(id='table-container', style='width: 100% !important; overflow-x: auto; overflow-y: auto; height: 70vh;',
@@ -221,23 +223,7 @@ server <- function(input, output, session) {
 		if (input$submitbutton>0) { 
 			isolate(datasetInput()[["summary"]])
 		} 
-	}, callback=JS('
-		// https://www.epicov.org/acknowledgement/04/26/EPI_ISL_430426.json
-		function doStuff() {
-			console.log("in doStuff");
-			$("td").each(function() {
-				var content = $(this).text();
-				if (content.startsWith("EPI_")) {
-					var newHtml = "<span epi_isl_id=\'" + content + "\'>" + content + "</span>";
-					$(this).html(newHtml);
-				}
-			});
-			gisaid.addPopups();		
-		}
-		console.log("waiting...");
-		setTimeout(doStuff, 3000);
-		console.log("after timeout");
-	'))
+	})
 	
 	# Prediction probabilities
 	output$probability <- DT::renderDataTable({
