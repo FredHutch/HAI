@@ -169,11 +169,11 @@ HAI<-function(pred_data, variant_prop, variant_corehap, m_parameters){
 	
 	# output
 	summary=data.frame(GISAID=variant_pred, HAI=pred_variant[,"pred"], post.HAI=ppred, prob= round(100*pred_variant[,"postp"],0))
-	if (!is.null(pred_data$Lineage)) summary=data.frame(summary,  lineage=pred_data$Lineage)
-	if (!is.null(pred_data$Pango.lineage)) summary=data.frame(summary,  lineage=pred_data$Pango.lineage)
-	if (!is.null(pred_data$Clade)) summary=data.frame(summary,  clade=pred_data$Clade)
-	if (!is.null(pred_data$Collection.date)) summary=data.frame(summary,  clade=pred_data$Collection.date)
-	if (!is.null(pred_data$Location)) summary=data.frame(summary,  clade=pred_data$Location)
+	if (!is.null(pred_data$Lineage)) summary=data.frame(summary,  Lineage=pred_data$Lineage)
+	if (!is.null(pred_data$Pango.lineage)) summary=data.frame(summary,  Lineage=pred_data$Pango.lineage)
+	if (!is.null(pred_data$Clade)) summary=data.frame(summary,  Clade=pred_data$Clade)
+	if (!is.null(pred_data$Collection.date)) summary=data.frame(summary,  Date=pred_data$Collection.date)
+	if (!is.null(pred_data$Location)) summary=data.frame(summary,  Location=pred_data$Location)
 
 	result=NULL; result$summary=summary; 
 	result$probability=data.frame(HAI=summary[,"HAI"], signif(pred_prob1,4)); result$inputdata=pred_data
