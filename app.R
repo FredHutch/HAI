@@ -20,8 +20,8 @@ tags$head(tags$script(src="assets/js/gisaid/gisaid.js")),
 									type = 'text/css',
 									'table.dataTable td {white-space: nowrap;}'
 								),
-								titlePanel(div(h1('AI for SARS-COV-2 Variant Predictions'),div(style="display: flex; align-items: center;",h5("Enabled by data from "),
-															 tags$a(target="_blank", img(src="assets/GISAIDlogo.png", style="margin-left: 8px;", height="25%", width="35%", align="left"),href="https://gisaid.org")),
+								titlePanel(div(h1('AI for SARS-COV-2 Variant Predictions'),div(style="display: flex; align-items: center;",
+															 ),
 															 ),
 													 windowTitle='AI for SARS-COV-2 Variant Predictions'),
 								#a("Terms of Use",target="_blank",href="./HAI_TOU.pdf"),
@@ -51,32 +51,29 @@ tags$head(tags$script(src="assets/js/gisaid/gisaid.js")),
 														 				 wellPanel(
 														 				 	div(id='table-container', style='width: 100% !important; overflow-x: auto; overflow-y: auto; height: 70vh;',
 														 				 			DT::dataTableOutput('summary'),  # Prediction results table
-														 				 	),
-														 				 	downloadButton("downloadData", "Download")
+														 				 	)
+														 				 	
 														 				 )
 														 ),
 														 tabPanel("Probability", value="",
 														 				 wellPanel(
 														 				 	div(id='table-container', style='width: 100% !important; overflow-x: auto; overflow-y: auto; height: 70vh;',
 														 				 			DT::dataTableOutput('probability'),  # Prediction results table
-														 				 	),
-														 				 	downloadButton("downloadprob", "Download")
+														 				 	)
 														 				 )
 														 				 ),
 														 tabPanel("Kappa", value="",
 														 				 wellPanel(
 														 				 	div(id='table-container', style='width: 100% !important; overflow-x: auto; overflow-y: auto; height: 70vh;',
 														 				 			DT::dataTableOutput('kappa'),  # Kappa analysis with hai prediction
-														 				 	),
-														 				 	downloadButton("downloadkappa", "Download")
+														 				 	)
 														 				 )
 														 ),
 														 tabPanel("Kappapp", value="",
 														 				 wellPanel(
 														 				 	div(id='table-container', style='width: 100% !important; overflow-x: auto; overflow-y: auto; height: 70vh;',
 														 				 			DT::dataTableOutput('kappapp'),  # Kappa analysis with post-prediction modification
-														 				 	),
-														 				 	downloadButton("downloadkappapp", "Download")
+														 				 	)
 														 				 )
 														 ),
 														 
@@ -84,8 +81,7 @@ tags$head(tags$script(src="assets/js/gisaid/gisaid.js")),
 														 				 wellPanel(
 														 				 	div(id='table-container', style='width: 100% !important; overflow-x: auto; overflow-y: auto; height: 70vh;',
 														 				 			DT::dataTableOutput('inputdata'),  # Prediction results table
-														 				 	),
-														 				 	downloadButton("downloadinput", "Download")
+														 				 	)
 														 				 )
 														 ),
 									)	
