@@ -87,12 +87,7 @@ tags$head(tags$script(src="assets/js/gisaid/gisaid.js")),
 									)	
 								),
 		# HTML("<script>gisaid.addPopups();</script>"),
-																	HTML("<div style='font-size: 60%'>We would like to thank the GISAID Initiative and are grateful to all of the data contributors, i.e. the Authors, 
-			the Originating laboratories responsible for obtaining the specimens, and the Submitting laboratories for 
-			generating the genetic sequence and metadata and sharing via the GISAID Initiative, on which this research is based. 
-			GISAID data provided on this website are subject to GISAID’s <a target='_blank' href='https://www.gisaid.org/registration/terms-of-use/'>Terms and Conditions</a>. <br/>
-			Elbe, S., and Buckland-Merrett, G. (2017) Data, disease and diplomacy: GISAID’s innovative contribution to global health. Global Challenges, 1:33-46. DOI: <a target='blank' href='https://onlinelibrary.wiley.com/doi/10.1002/gch2.1018'>10.1002/gch2.1018</a> PMCID: <a target='_blank' href='https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6607375/'>31565258</a>.</div><br/>"),
-
+															
 								div(
 								actionLink("contactLink1", "Academic contact"), HTML("&nbsp;"),
 									actionLink("contactLink2", "Non-academic contact"),
