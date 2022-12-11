@@ -1,9 +1,20 @@
-version: '2'
+version: '3.3'
 services:
   hai:
-    image: dockerimages.fhcrc.org/hai:latest
+    image: sc-registry.fredhutch.org/hai:latest
+    networks:
+      - proxy
+    deploy:
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.hai.rule=Host(`hai.fredhutch.org`)"
+        - "traefik.http.routers.hai-secured.rule=Host(`hai.fredhutch.org`)"
+        - "traefik.http.routers.hai.entrypoints=web,web-secured"
+        - "traefik.http.services.hai.loadbalancer.server.port=3838" # it seems you always need to give traefik a port so it 'notices' the service
+        - "traefik.http.routers.hai.tls=true"
 
-    labels:
-      io.rancher.container.pull_image: always
-
-    restart: always
+networks:
+  proxy:
+    external: true
