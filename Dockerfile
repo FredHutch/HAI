@@ -13,6 +13,7 @@ RUN R -q -e 'BiocManager::install(c("shinythemes", "data.table",  "RCurl", "DT",
 
 RUN rm -rf /srv/shiny-server/
 ADD ./ /srv/shiny-server/
+RUN chown -R shiny:shiny /srv/shiny-server/
 
 EXPOSE 3838
 
