@@ -18,5 +18,4 @@ EXPOSE 3838
 
 WORKDIR /srv/shiny-server/
 
-CMD R -f app.R
-
+CMD /usr/bin/shiny-server

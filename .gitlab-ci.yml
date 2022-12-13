@@ -37,6 +37,8 @@ deploy:
   only:
     refs:
        - main
+       # TODO remove this!: 
+       - shinyserver
   script:
     - docker tag sc-registry.fredhutch.org/hai:test sc-registry.fredhutch.org/hai:latest
     - docker push sc-registry.fredhutch.org/hai:latest
