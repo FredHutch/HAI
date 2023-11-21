@@ -17,7 +17,7 @@ stages:
 build:
   stage: build
   script:
-    - aws s3 cp s3://fh-shiny-app-support/lzhao/hai/preddata_2022_05_18_full.Rdata ./data/
+    - aws s3 cp s3://fh-app-support/lzhao/hai/preddata_2022_05_18_full.Rdata ./data/
     - docker build -t sc-registry.fredhutch.org/hai:test .
     - rm data/preddata_2022_05_18_full.Rdata
     - docker push sc-registry.fredhutch.org/hai:test
